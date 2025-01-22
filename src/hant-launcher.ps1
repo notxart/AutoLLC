@@ -1,3 +1,6 @@
+# Progress Bar (SilentlyContinue to avoid slowing down Invoke-WebRequest)
+$ProgressPreference = "SilentlyContinue"
+
 # Function to wait for any key press
 function Wait-AnyKey {
     [System.Console]::WriteLine("Press any key to continue...")
@@ -92,11 +95,6 @@ $history = Read-HistoryFile
 
 # Iterate through downloading and decompressing each target
 for ($i = 0; $i -lt $apiUrls.Length; $i++) {
-    # Progress Bar (SilentlyContinue to avoid slowing down Invoke-WebRequest)
-    $ProgressPreference = "Continue"
-    Write-Progress -Activity "Update Modules:" -Status "$($apiUrls[$i])" -PercentComplete (($i + 1) / $apiUrls.Length * 100)
-    $ProgressPreference = "SilentlyContinue"
-
     $apiUrl = "https://api.github.com/repos/$($apiUrls[$i])/releases/latest"
     $target = $targets[$i]
 
