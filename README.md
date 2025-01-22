@@ -8,8 +8,11 @@
 
 - ### 啟動器（推薦）
 
-  1. 於[Releases](https://github.com/notxart/AutoLLC/releases/latest)下載`AutoLLC.exe`檔案。
-  2. 左鍵雙擊`AutoLLC.exe`即可。若出現類似**NuGet provider is required to continue**的資訊，請輸入`y`，然後按下 `Enter` 鍵，繼續完成安裝。
+  1. 於 [**Releases**](https://github.com/notxart/AutoLLC/releases/latest) 下載 `AutoLLC.exe` 檔案。
+  2. 左鍵雙擊 `AutoLLC.exe` 運行啟動器即可。\
+   ![Launcher](https://github.com/user-attachments/assets/e658d2d7-93fa-4842-ab9b-78f7effaaa62)
+  3. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
+   ![Nuget](https://github.com/user-attachments/assets/713a9a53-9617-4af2-bd0f-f22f88240ba6)
 
 - ### 安裝腳本
 
@@ -18,12 +21,17 @@
   2. 複製以下指令，並於 `PowerShell` 中貼上，然後按下 `Enter` 鍵，安裝腳本將自動運行。
 
      ```PowerShell
-     irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1 | iex 
+     irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1 | iex
      ```
 
-  3. 若出現類似**NuGet provider is required to continue**的資訊，請輸入`y`，然後按下 `Enter` 鍵，繼續完成安裝腳本。
-  4. 在漢化補丁安裝完成後，會彈出以下**BepInEx小黑框**，請耐心等待其完成作業。
-  5. 在遊戲介面彈出後，即可開始遊戲，**在遊玩時請注意不要關閉BepInEx小黑框**，遊戲愉快！
+     ![Script](https://github.com/user-attachments/assets/89f55f7e-b320-493f-b6ef-194fe5cf33f5)
+
+  3. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
+   ![Nuget-script](https://github.com/user-attachments/assets/8ff32bf8-4e79-437b-8a90-0bd06f30c50e)
+  4. 在漢化補丁安裝完成後，會彈出以下 **BepInEx 小黑框**，請耐心等待其完成作業。\
+   ![BepInEx](https://github.com/user-attachments/assets/896556ff-b53c-4e07-bac8-1e2064025df4)
+  5. 在遊戲介面彈出後，即可開始遊戲，**在遊玩過程中請注意不要關閉 BepInEx 小黑框**，祝您遊戲愉快！\
+   ![Game](https://github.com/user-attachments/assets/211f39eb-9a89-4133-ae83-4533d7ef7147)
 
 ## 免責聲明
 
