@@ -127,7 +127,7 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
     }
     catch {
         Remove-Item $fileName
-        Write-Error "解壓縮失敗：$($_.Exception.Message)"
+        Write-Error "7Zip解壓縮失敗，腳本已終止。請嘗試透過管理員身分再次運行該腳本，詳細資訊:`n$($_.Exception.Message)"
         exit 1
     }
     if (-Not $Debug) { Remove-Item $fileName }
