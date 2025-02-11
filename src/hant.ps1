@@ -120,9 +120,16 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
     }
 
     # Download, unzip, and remove compressed files
-    $fileName = "limbus_i18n_$i.7z"
+    $fileName = Join-Path $env:TEMP "limbus_i18n_$i.7z"
     Invoke-WebRequest $url -OutFile $fileName
-    Expand-7Zip -ArchiveFileName $fileName -TargetPath $gamePath
+    try {
+        Expand-7Zip -ArchiveFileName $fileName -TargetPath $gamePath -ErrorAction Stop
+    }
+    catch {
+        Remove-Item $fileName
+        Write-Error "解壓縮失敗：$($_.Exception.Message)"
+        exit 1
+    }
     if (-Not $Debug) { Remove-Item $fileName }
 
     # Update the history with the new URL
