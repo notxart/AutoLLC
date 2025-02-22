@@ -6,31 +6,42 @@
 
 ## 使用方法
 
-- ### 啟動器（推薦）
+### 啟動器（推薦）
 
-  1. 於 [**Releases**](https://github.com/notxart/AutoLLC/releases/latest) 下載 `AutoLLC.exe` 檔案。
-  2. 左鍵雙擊 `AutoLLC.exe` 運行啟動器即可。\
+1. 於 [**Releases**](https://github.com/notxart/AutoLLC/releases/latest) 下載 `AutoLLC.exe` 檔案。
+2. 左鍵雙擊 `AutoLLC.exe` 運行啟動器即可。\
    ![Launcher](https://github.com/user-attachments/assets/e658d2d7-93fa-4842-ab9b-78f7effaaa62)
-  3. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
-   ![Nuget](https://github.com/user-attachments/assets/713a9a53-9617-4af2-bd0f-f22f88240ba6)
+3. 對於**普通更新與啟動遊戲**請輸入 `1`；對於**重大變更**（需重新安裝）請輸入 `2`；**放棄安裝**請輸入 `3`。
+4. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
+   ![Nuget](https://github.com/user-attachments/assets/2ab740b6-160e-4583-9299-13fcec5bf53f)
 
-- ### 安裝腳本
+### 安裝腳本
 
-  1. 開啟 `PowerShell`（**請不要使用 CMD 或 具有管理員權限的 PowerShell**）。如果您不知道怎麼做，請右鍵點擊 Windows 開始功能表，然後選擇 `PowerShell` 或 `終端機`（`Terminal`）。\
+1. 開啟 `PowerShell`（**請不要使用 CMD 或 具有管理員權限的 PowerShell**）。如果您不知道怎麼做，請右鍵點擊 Windows 開始功能表，然後選擇 `PowerShell` 或 `終端機`（`Terminal`）。\
    ![PowerShell](https://github.com/user-attachments/assets/8127f94d-ce97-427f-8f39-8ccd18536e24)
-  2. 複製以下指令，並於 `PowerShell` 中貼上，然後按下 `Enter` 鍵，安裝腳本將自動運行。
+2. 複製以下指令，並於 `PowerShell` 中貼上，然後按下 `Enter` 鍵，安裝腳本將自動運行。
 
-     ```PowerShell
-     irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1 | iex
-     ```
+   - 一般安裝更新
 
-     ![Script](https://github.com/user-attachments/assets/89f55f7e-b320-493f-b6ef-194fe5cf33f5)
+      ```PowerShell
+      irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1 | iex
+      ```
 
-  3. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
+      ![Script](https://github.com/user-attachments/assets/89f55f7e-b320-493f-b6ef-194fe5cf33f5)
+
+   - 重新安裝
+
+      ```PowerShell
+      iex "& { $(irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1) } -Reinstall"
+      ```
+
+      ![Script2](https://github.com/user-attachments/assets/4a3b2a55-8372-49af-8186-58e8222d27e4)
+
+3. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
    ![Nuget-script](https://github.com/user-attachments/assets/8ff32bf8-4e79-437b-8a90-0bd06f30c50e)
-  4. 在漢化補丁安裝完成後，會彈出以下 **BepInEx 小黑框**，請耐心等待其完成作業。\
+4. 在漢化補丁安裝完成後，會彈出以下 **BepInEx 小黑框**，請耐心等待其完成作業。\
    ![BepInEx](https://github.com/user-attachments/assets/896556ff-b53c-4e07-bac8-1e2064025df4)
-  5. 在遊戲介面彈出後，即可開始遊戲，**在遊玩過程中請注意不要關閉 BepInEx 小黑框**，祝您遊戲愉快！\
+5. 在遊戲介面彈出後，即可開始遊戲，**在遊玩過程中請注意不要關閉 BepInEx 小黑框**，祝您遊戲愉快！\
    ![Game](https://github.com/user-attachments/assets/211f39eb-9a89-4133-ae83-4533d7ef7147)
 
 ## 免責聲明
