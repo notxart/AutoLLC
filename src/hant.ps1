@@ -1,4 +1,3 @@
-# Debug
 param(
     [switch]$Debug = $false,
     [switch]$Reinstall = $false

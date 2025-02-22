@@ -7,12 +7,44 @@ function Wait-AnyKey {
     [System.Console]::ReadKey($true) > $null
 }
 
+# Function to remove old installation files
+function Remove-OldInstallation {
+    param (
+        [string]$gamePath
+    )
+    $itemsToRemove = @(
+        "BepInEx",
+        "dotnet",
+        "AutoLLC.history",
+        "doorstop_config.ini",
+        "winhttp.dll"
+    )
+    foreach ($item in $itemsToRemove) {
+        $fullPath = Join-Path -Path $gamePath -ChildPath $item
+        if (Test-Path $fullPath) {
+            try {
+                if (Test-Path $fullPath -PathType Container) {
+                    Remove-Item -Path $fullPath -Recurse -Force -ErrorAction Stop
+                }
+                else {
+                    Remove-Item -Path $fullPath -Force -ErrorAction Stop
+                }
+            }
+            catch {
+                Write-Error "Failed to remove $fullPath : $_"
+                Wait-AnyKey
+                exit 1
+            }
+        }
+    }
+}
+
 # Function to get Steam installation path from registry
 function Get-SteamPath {
     try {
         $steamPath = (Get-ItemProperty -Path "HKCU:\Software\Valve\Steam").SteamPath
         if (-Not (Test-Path -Path $steamPath)) {
-            throw "Steam path not found, script terminated."
+            throw "Steam installation path not found."
         }
         return $steamPath
     }
@@ -23,12 +55,46 @@ function Get-SteamPath {
     }
 }
 
-# Read the "libraryfolders.vdf" file to get all Steam library directories
+# Show installation menu
+Write-Host "========================================"
+Write-Host " Limbus Company Chinese Patch Installer"
+Write-Host "========================================"
+Write-Host "1. Normal Installation (Default - Press Enter or 1)"
+Write-Host "2. Force Reinstall"
+Write-Host "3. Exit Installer (Press 3 or Q)"
+Write-Host ""
+
+$choice = $null
+[System.Console]::Write("Please select an option (1/2/3): ")
+do {
+    $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    switch ($key.VirtualKeyCode) {
+        13 { $choice = "1" }  # Code 13 = Enter
+        49 { $choice = "1" }  # Code 49 = 1
+        50 { $choice = "2" }  # Code 50 = 2
+        51 { $choice = "3" }  # Code 51 = 3
+        81 { $choice = "3" }  # Code 81 = Q
+        default {
+            [System.Console]::SetCursorPosition(0, [System.Console]::CursorTop)
+            [System.Console]::Write("Invalid input. Please enter 1, 2 or 3: ")
+        }
+    }
+} while ($choice -notin @("1", "2", "3"))
+[System.Console]::Write("`n`n")
+
+# Handle exit choice
+if ($choice -eq "3") {
+    Write-Host "Installation canceled by user."
+    Wait-AnyKey
+    exit 0
+}
+
+# Read Steam library configuration
 $libraryFoldersPath = Join-Path $(Get-SteamPath) "steamapps\libraryfolders.vdf"
 $libraryFoldersContent = Get-Content -Raw $libraryFoldersPath
 $libraryFolders = [regex]::Matches($libraryFoldersContent, '"path"\s+"([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
 
-# Find the installation path of the game Limbus Company
+# Find game installation path
 $gamePath = $null
 foreach ($folder in $libraryFolders) {
     $manifestPath = Join-Path $folder "steamapps\common\Limbus Company"
@@ -38,40 +104,46 @@ foreach ($folder in $libraryFolders) {
     }
 }
 if (-Not ($gamePath)) {
-    Write-Error "Limbus Company game installation directory not found, script terminated."
+    Write-Error "Limbus Company installation directory not found."
     Wait-AnyKey
     exit 1
 }
-Write-Host "Limbus Company game installation directory found, Traditional Chinese language pack will be installed at: $gamePath"
 
-# Check if the necessary module 7Zip4Powershell is installed
+# Handle reinstall choice
+if ($choice -eq "2") {
+    Write-Host "`nRemoving previous installation..."
+    Remove-OldInstallation -gamePath $gamePath
+    Write-Host "Old files cleaned successfully.`n"
+}
+
+Write-Host "Limbus Company game installation path found, Traditional Chinese language pack will be installed at: $gamePath"
+
+# Check 7Zip4Powershell module
 try {
     if (-Not (Get-Command -Module 7Zip4Powershell -ErrorAction SilentlyContinue)) {
         Install-Module -Name 7Zip4Powershell -Scope CurrentUser -Force
     }
 }
 catch {
-    Write-Error "Unable to install required module: 7Zip4Powershell, script terminated."
+    Write-Error "Failed to install required module: 7Zip4Powershell"
     Wait-AnyKey
     exit 1
 }
 
-# Define GitHub API URLs and download targets
+# Define resource targets
 $apiUrls = @(
     "LocalizeLimbusCompany/BepInEx_For_LLC",
-    "SmallYuanSY/LLC_ChineseFontAsset",
-    "SmallYuanSY/LocalizeLimbusCompany_TW"
+    "LocalizeLimbusCompany/LLC_ChineseFontAsset",
+    "SmallYuanSY/LocalizeLimbusCompany"
 )
 $targets = @(
     "https.*BepInEx-IL2CPP-x64.*.7z",
     "https.*chinesefont_BIE.*.7z",
     "https.*LimbusLocalize_BIE.*.7z"
 )
-
-# Define the path to the history file
 $historyFilePath = Join-Path $gamePath "AutoLLC.history"
 
-# Define functions for reading/writing history file
+# History file functions
 function Read-HistoryFile {
     $historyHashTable = @{}
     if (Test-Path $historyFilePath) {
@@ -82,6 +154,7 @@ function Read-HistoryFile {
     }
     return $historyHashTable
 }
+
 function Write-HistoryFile {
     param (
         [Parameter(Mandatory = $true)]
@@ -90,11 +163,12 @@ function Write-HistoryFile {
     $record | ConvertTo-Json -Compress | Set-Content -Path $historyFilePath
 }
 
-# Read the history file
 $history = Read-HistoryFile
 
-# Iterate through downloading and decompressing each target
+# Main installation process
 for ($i = 0; $i -lt $apiUrls.Length; $i++) {
+    Write-Host "Updating module: $($apiUrls[$i])"
+
     $apiUrl = "https://api.github.com/repos/$($apiUrls[$i])/releases/latest"
     $target = $targets[$i]
 
@@ -130,7 +204,7 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
     }
     catch {
         Remove-Item $fileName
-        Write-Error "7Zip decompression failed, script terminated."
+        Write-Error "7Zip extraction failed. Please try running as administrator."
         Wait-AnyKey
         exit 1
     }
@@ -141,7 +215,7 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
     if (($i + 1) -eq $apiUrls.Length) { Write-HistoryFile -record $history }
 }
 
-# Start the game
+# Launch game
 if (-Not (Get-Process -Name "steam" -ErrorAction SilentlyContinue)) {
     Start-Process "steam://rungameid/1973530"
 }

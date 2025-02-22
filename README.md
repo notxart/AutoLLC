@@ -31,7 +31,7 @@
       - 重新安裝
 
          ```PowerShell
-         irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1 | iex -ArgumentList '-Reinstall'
+         iex "& { $(irm https://raw.githubusercontent.com/notxart/AutoLLC/refs/heads/main/src/hant.ps1) } -Reinstall"
          ```
 
    3. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
