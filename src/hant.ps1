@@ -166,7 +166,7 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
 
     # Download, unzip, and remove compressed files
     $fileName = Join-Path $env:TEMP "limbus_i18n_$i.7z"
-    Invoke-WebRequest $url -OutFile $fileName
+    (New-Object Net.WebClient).Downloadfile($url, $fileName)
     try {
         Expand-7Zip -ArchiveFileName $fileName -TargetPath $gamePath -ErrorAction Stop
     }

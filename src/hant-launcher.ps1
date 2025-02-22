@@ -74,6 +74,9 @@ do {
         50 { $choice = "2" }  # Code 50 = 2
         51 { $choice = "3" }  # Code 51 = 3
         81 { $choice = "3" }  # Code 81 = Q
+        97 { $choice = "1" }  # Code 97 = Num 1
+        98 { $choice = "2" }  # Code 98 = Num 2
+        99 { $choice = "3" }  # Code 99 = Num 3
         default {
             [System.Console]::SetCursorPosition(0, [System.Console]::CursorTop)
             [System.Console]::Write("Invalid input. Please enter 1, 2 or 3: ")
@@ -198,7 +201,7 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
 
     # Download, unzip, and remove compressed files
     $fileName = Join-Path $env:TEMP "limbus_i18n_$i.7z"
-    Invoke-WebRequest $url -OutFile $fileName
+    (New-Object Net.WebClient).Downloadfile($url, $fileName)
     try {
         Expand-7Zip -ArchiveFileName $fileName -TargetPath $gamePath -ErrorAction Stop
     }
