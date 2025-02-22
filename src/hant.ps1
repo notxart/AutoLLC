@@ -1,6 +1,44 @@
 # Debug
-param([switch]$Debug = $false)
+param(
+    [switch]$Debug = $false,
+    [switch]$Reinstall = $false
+)
 if ($Debug) { $DebugPreference = "Continue" }
+
+# Function to remove old installation files
+function Remove-OldInstallation {
+    param (
+        [string]$gamePath
+    )
+    $itemsToRemove = @(
+        "BepInEx",
+        "dotnet",
+        "AutoLLC.history",
+        "doorstop_config.ini",
+        "winhttp.dll"
+    )
+    foreach ($item in $itemsToRemove) {
+        $fullPath = Join-Path -Path $gamePath -ChildPath $item
+        if (Test-Path $fullPath) {
+            try {
+                if (Test-Path $fullPath -PathType Container) {
+                    Remove-Item -Path $fullPath -Recurse -Force -ErrorAction Stop
+                }
+                else {
+                    Remove-Item -Path $fullPath -Force -ErrorAction Stop
+                }
+                Write-Debug "已刪除: $fullPath"
+            }
+            catch {
+                Write-Error "刪除 $fullPath 失敗: $_"
+                exit 1
+            }
+        }
+        else {
+            Write-Debug "未找到: $fullPath，跳過刪除。"
+        }
+    }
+}
 
 # Function to get Steam installation path from registry
 function Get-SteamPath {
@@ -35,6 +73,14 @@ if (-Not ($gamePath)) {
     Write-Error "未找到遊戲 Limbus Company 的安裝目錄，腳本已終止。"
     exit 1
 }
+
+# Handle reinstall request
+if ($Reinstall) {
+    Write-Host "正在執行重新安裝流程，刪除舊版本文件..."
+    Remove-OldInstallation -gamePath $gamePath
+    Write-Host "舊版本文件已清除，開始全新安裝流程"
+}
+
 Write-Host "已找到遊戲 Limbus Company 的安裝目錄，繁體中文語言包將安裝於: $gamePath"
 
 # Check if the necessary module 7Zip4Powershell is installed
@@ -51,8 +97,8 @@ catch {
 # Define GitHub API URLs and download targets
 $apiUrls = @(
     "LocalizeLimbusCompany/BepInEx_For_LLC",
-    "SmallYuanSY/LLC_ChineseFontAsset",
-    "SmallYuanSY/LocalizeLimbusCompany_TW"
+    "LocalizeLimbusCompany/LLC_ChineseFontAsset",
+    "SmallYuanSY/LocalizeLimbusCompany"
 )
 $targets = @(
     "https.*BepInEx-IL2CPP-x64.*.7z",
