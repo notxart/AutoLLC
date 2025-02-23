@@ -136,7 +136,7 @@ catch {
 # Define resource targets
 $apiUrls = @(
     "LocalizeLimbusCompany/BepInEx_For_LLC",
-    "LocalizeLimbusCompany/LLC_ChineseFontAsset",
+    "SmallYuanSY/LLC_ChineseFontAsset",
     "SmallYuanSY/LocalizeLimbusCompany"
 )
 $targets = @(
