@@ -96,7 +96,7 @@ catch {
 # Define GitHub API URLs and download targets
 $apiUrls = @(
     "LocalizeLimbusCompany/BepInEx_For_LLC",
-    "LocalizeLimbusCompany/LLC_ChineseFontAsset",
+    "SmallYuanSY/LLC_ChineseFontAsset",
     "SmallYuanSY/LocalizeLimbusCompany"
 )
 $targets = @(
