@@ -64,12 +64,19 @@ $gamePath = $null
 foreach ($folder in $libraryFolders) {
     $manifestPath = Join-Path $folder "steamapps\common\Limbus Company"
     if (Test-Path $manifestPath) {
-        $gamePath = Resolve-Path -Path $manifestPath
-        break
+        $exePath = Join-Path $manifestPath "LimbusCompany.exe"
+        if (Test-Path $exePath) {
+            $gamePath = Resolve-Path -Path $manifestPath
+            Write-Debug "找到有效路徑: $gamePath"
+            break
+        }
+        else {
+            Write-Debug "跳過路徑 $manifestPath (未找到 LimbusCompany.exe)"
+        }
     }
 }
 if (-Not ($gamePath)) {
-    Write-Error "未找到遊戲 Limbus Company 的安裝目錄，腳本已終止。"
+    Write-Error "未找到遊戲 Limbus Company 的安裝目錄，或目錄中缺少 LimbusCompany.exe 檔，腳本已終止。"
     exit 1
 }
 
