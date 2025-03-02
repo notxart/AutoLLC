@@ -102,12 +102,15 @@ $gamePath = $null
 foreach ($folder in $libraryFolders) {
     $manifestPath = Join-Path $folder "steamapps\common\Limbus Company"
     if (Test-Path $manifestPath) {
-        $gamePath = Resolve-Path -Path $manifestPath
-        break
+        $exePath = Join-Path $manifestPath "LimbusCompany.exe"
+        if (Test-Path $exePath) {
+            $gamePath = Resolve-Path -Path $manifestPath
+            break
+        }
     }
 }
 if (-Not ($gamePath)) {
-    Write-Error "Limbus Company installation directory not found."
+    Write-Error "Limbus Company installation directory was not found, or LimbusCompany.exe is missing from the directory."
     Wait-AnyKey
     exit 1
 }
