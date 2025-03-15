@@ -1,12 +1,16 @@
 # AutoLLC
 
+## 警告
+
+### 2025/03/15 將會是 AutoLLC 最後一個以個人名義發佈之版本，從下個版本開始，發佈位置將遷移至 [LimbusTraditionalMandarin](https://github.com/LimbusTraditionalMandarin/AutoLLC)，正式成為繁體中文漢化組的官方發佈版本，並且會帶有圖形化介面，感謝大家過去對本個人項目的支持與喜愛
+
 ## 簡介 / Abstract
 
 一款**單命令式安裝啟動器/腳本**，用於簡化**安裝邊獄巴士繁體中文語言包**時所需的複雜步驟！
 
 ## 使用方法
 
-### 啟動器（推薦）
+### 啟動器
 
 1. 於 [**Releases**](https://github.com/notxart/AutoLLC/releases/latest) 下載 `AutoLLC.exe` 檔案。
 2. 左鍵雙擊 `AutoLLC.exe` 運行啟動器即可。\
@@ -15,7 +19,7 @@
 4. 若出現類似 **NuGet provider is required to continue** 的資訊，請輸入 `y`，然後按下 `Enter` 鍵，繼續完成安裝。\
    ![Nuget](https://github.com/user-attachments/assets/2ab740b6-160e-4583-9299-13fcec5bf53f)
 
-### 安裝腳本
+### ~~安裝腳本~~ (已棄用)
 
 1. 開啟 `PowerShell`（**請不要使用 CMD 或 具有管理員權限的 PowerShell**）。如果您不知道怎麼做，請右鍵點擊 Windows 開始功能表，然後選擇 `PowerShell` 或 `終端機`（`Terminal`）。\
    ![PowerShell](https://github.com/user-attachments/assets/8127f94d-ce97-427f-8f39-8ccd18536e24)
