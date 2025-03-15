@@ -17,7 +17,9 @@ function Remove-OldInstallation {
         "dotnet",
         "AutoLLC.history",
         "doorstop_config.ini",
-        "winhttp.dll"
+        "winhttp.dll",
+        ".doorstop_version",
+        "changelog.txt"
     )
     foreach ($item in $itemsToRemove) {
         $fullPath = Join-Path -Path $gamePath -ChildPath $item
@@ -124,28 +126,16 @@ if ($choice -eq "2") {
 
 Write-Host "Limbus Company game installation path found, Traditional Chinese language pack will be installed at: $gamePath"
 
-# Check 7Zip4Powershell module
-try {
-    if (-Not (Get-Command -Module 7Zip4Powershell -ErrorAction SilentlyContinue)) {
-        Install-Module -Name 7Zip4Powershell -Scope CurrentUser -Force
-    }
-}
-catch {
-    Write-Error "Failed to install required module: 7Zip4Powershell"
-    Wait-AnyKey
-    exit 1
-}
-
 # Define resource targets
 $apiUrls = @(
-    "LocalizeLimbusCompany/BepInEx_For_LLC",
-    "SmallYuanSY/LLC_ChineseFontAsset",
-    "SmallYuanSY/LocalizeLimbusCompany"
+    "BepInEx/BepInEx",
+    "LimbusTraditionalMandarin/font",
+    "LimbusTraditionalMandarin/storyline"
 )
 $targets = @(
-    "https.*BepInEx-IL2CPP-x64.*.7z",
-    "https.*chinesefont_BIE.*.7z",
-    "https.*LimbusLocalize_BIE.*.7z"
+    "https.*BepInEx-Unity.IL2CPP-win-x64-6.*.zip",
+    "https.*LTM_font.*.zip",
+    "https.*LTM_.*.zip"
 )
 $historyFilePath = Join-Path $gamePath "AutoLLC.history"
 
@@ -175,7 +165,7 @@ $history = Read-HistoryFile
 for ($i = 0; $i -lt $apiUrls.Length; $i++) {
     Write-Host "Updating module: $($apiUrls[$i])"
 
-    $apiUrl = "https://api.github.com/repos/$($apiUrls[$i])/releases/latest"
+    $apiUrl = "https://api.github.com/repos/$($apiUrls[$i])/releases"
     $target = $targets[$i]
 
     try {
@@ -183,7 +173,7 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
         $response = Invoke-WebRequest -Uri $apiUrl -UseBasicParsing
         $json = $response.Content | ConvertFrom-Json
 
-        # Search URLs with .7z using regex
+        # Search URLs with .zip using regex
         foreach ($asset in $json.assets) {
             if ($asset -match $target) {
                 $url = $asset.browser_download_url
@@ -203,18 +193,29 @@ for ($i = 0; $i -lt $apiUrls.Length; $i++) {
     }
 
     # Download, unzip, and remove compressed files
-    $fileName = Join-Path $env:TEMP "limbus_i18n_$i.7z"
+    $fileName = Join-Path $env:TEMP "limbus_i18n_$i.zip"
     (New-Object Net.WebClient).Downloadfile($url, $fileName)
     try {
-        Expand-7Zip -ArchiveFileName $fileName -TargetPath $gamePath -ErrorAction Stop
+        # Handle the root directory problem that the ZIP may contain
+        $tempExtractDir = Join-Path $env:TEMP "limbus_extract_$i"
+        New-Item -ItemType Directory -Path $tempExtractDir -Force | Out-Null
+
+        Expand-Archive -Path $fileName -DestinationPath $tempExtractDir -Force -ErrorAction Stop
+
+        # Merge the decompressed content into the game directory
+        Get-ChildItem -Path $tempExtractDir | Copy-Item -Destination $gamePath -Recurse -Force
     }
     catch {
-        Remove-Item $fileName
-        Write-Error "7Zip extraction failed. Please try running as administrator."
+        Remove-Item $fileName -ErrorAction SilentlyContinue
+        Remove-Item $tempExtractDir -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Error "ZIP extraction failed: $_"
         Wait-AnyKey
         exit 1
     }
-    Remove-Item $fileName
+    finally {
+        Remove-Item $fileName -ErrorAction SilentlyContinue
+        Remove-Item $tempExtractDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
 
     # Update the history with the new URL
     $history[$apiUrl] = $url
