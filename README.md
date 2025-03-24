@@ -2,7 +2,7 @@
 
 ## 警告
 
-### 2025/03/15 將會是 AutoLLC 最後一個以個人名義發佈之版本，從下個版本開始，發佈位置將遷移至 [LimbusTraditionalMandarin](https://github.com/LimbusTraditionalMandarin/AutoLLC)，正式成為繁體中文漢化組的官方發佈版本，並且會帶有圖形化介面，感謝大家過去對本個人項目的支持與喜愛
+### 2025/03/15 將會是 AutoLLC 最後一個以個人名義發佈之版本，從下個版本開始，發佈位置將遷移至 [LimbusTraditionalMandarin](https://github.com/LimbusTraditionalMandarin/MAD)，正式成為繁體中文漢化組的官方發佈版本，並且會帶有圖形化介面，感謝大家過去對本個人項目的支持與喜愛
 
 ## 簡介 / Abstract
 
